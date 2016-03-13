@@ -1,10 +1,16 @@
+#!/usr/bin/python3
+
+"""loss.py: Provides a suite of loss functions."""
+
+__author__ = 'Andrei Muntean'
+__license__ = 'MIT License'
+
 import numpy as np
 
 
-def svm_loss(x, y, W):
+def svm_loss(scores, y):
 	"""Calculates the hinge loss."""
 
-	scores = W @ x
 	margins = np.maximum(0, scores - scores[y] + 1)
 	margins[y] = 0
 	loss = np.sum(margins)
@@ -12,10 +18,9 @@ def svm_loss(x, y, W):
 	return loss
 
 
-def softmax_loss(x, y, W):
+def softmax_loss(scores, y):
 	"""Calculates the cross-entropy loss."""
 
-	scores = W @ x
 	probability = np.exp(scores[y]) / np.sum(np.exp(scores))
 	loss = -np.log(probability)
 
@@ -26,7 +31,8 @@ def get_loss(X, Y, W, regularization=1):
 	loss = 0
 
 	for x, y in zip(X, Y):
-		loss += svm_loss(x, y, W)
+		scores = W @ x
+		loss += svm_loss(scores, y)
 
 	loss /= X.size
 
