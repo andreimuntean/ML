@@ -20,3 +20,9 @@ def get_numerical_grad(f, x, h=0.001):
 		x[index] -= h
 
 	return grad
+
+
+def get_p_norm(x, p):
+    """Computes the p-norm of the specified tensor."""
+
+    return np.sum((np.abs(x)**p), axis=1)**(1/p)
