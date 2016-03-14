@@ -14,13 +14,13 @@ class KNearestNeighbors:
         self.X = X
         self.Y = Y
 
-    def predict(self, X, k):
+    def predict(self, X, k, p=2):
         test_size = X.shape[0]
         Y = np.empty(test_size)
 
         for index in range(test_size):
             # Measures the distances between X and every element of the training set.
-            distances = get_p_norm(self.X - X[index, :], 2)
+            distances = get_p_norm(self.X - X[index, :], p)
 
             # Finds the classes of the k-nearest neighbors.
             k_nearest_Y = self.Y[np.argsort(distances)[:k]]

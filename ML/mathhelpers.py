@@ -8,6 +8,15 @@ __license__ = 'MIT License'
 import numpy as np
 
 
+def get_entropy(x):
+    """Computes the entropy of the specified array."""
+
+    p_x = np.unique(x, return_counts=True)[1] / x.size
+    entropy = -np.sum(p_x * np.log2(p_x))
+
+    return entropy
+
+
 def get_numerical_grad(f, x, h=0.001):
 	"""Computes the numerical gradient of the specified function."""
 
