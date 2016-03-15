@@ -8,35 +8,37 @@ __license__ = 'MIT License'
 import numpy as np
 
 
-def svm_loss(scores, y):
+def get_svm_loss(X, Y, W, margin=1, regularization=1):
     """Calculates the hinge loss."""
 
-    margins = np.maximum(0, scores - scores[y] + 1)
-    margins[y] = 0
-    loss = np.sum(margins)
+    # Computes the scores of every x and w.
+    scores = X @ W.T
+
+    # Computes the margin loss.
+    Y_rows = np.arange(Y.size)
+    margin_loss = np.maximum(0, (scores.T - scores[Y_rows, Y]).T + margin)
+    margin_loss[Y_rows, Y] = 0
+
+    # Computes the loss and applies L2 regularization.
+    loss = np.sum(margin_loss) / X.shape[0] + regularization * np.sum(W**2)
 
     return loss
 
 
-def softmax_loss(scores, y):
+def get_softmax_loss(X, Y, W, regularization=1):
     """Calculates the cross-entropy loss."""
 
-    probability = np.exp(scores[y]) / np.sum(np.exp(scores))
-    loss = -np.log(probability)
+    # Computes the scores of every x and w.
+    scores = X @ W.T
 
-    return loss
+    # Shrinks the scores to prevent exponentiation overflows.
+    scores -= np.max(scores)
 
+    # Applies the softmax function to compute the probabilities.
+    Y_rows = np.arange(Y.size)
+    probabilities = np.exp(scores[Y_rows, Y]) / np.sum(np.exp(scores), axis=1)
 
-def get_loss(X, Y, W, regularization=1):
-    loss = 0
-
-    for x, y in zip(X, Y):
-        scores = W @ x
-        loss += svm_loss(scores, y)
-
-    loss /= X.size
-
-    # Regularizes the loss function using L2 regularization.
-    loss += regularization * (W**2).sum()
+    # Computes the loss and applies L2 regularization.
+    loss = -np.log(probabilities) + regularization * np.sum(W**2)
 
     return loss
