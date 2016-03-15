@@ -20,15 +20,23 @@ def read_data(path):
     return data
 
 
-def load_cifar10(path):
+def load_cifar10(path, split_training_set=False):
     """Reads the CIFAR-10 data set from the specified path."""
 
-    test_data = read_data(join(path, 'test_batch'))
-    training_data = []
+    data = {'data': [], 'labels': []}
 
     for index in range(5):
         batch_path = join(path, 'data_batch_{}'.format(index + 1))
         batch = read_data(batch_path)
-        training_data.append(batch)
 
-    return training_data, test_data
+        data['data'].append(batch['data'])
+        data['labels'].append(batch['labels'])
+
+
+    if not split_training_set:
+        data['data'] = np.concatenate(data['data'])
+        data['labels'] = np.concatenate(data['labels'])
+
+    test_data = read_data(join(path, 'test_batch'))
+
+    return data['data'], data['labels'], test_data['data'], test_data['labels']

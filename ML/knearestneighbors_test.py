@@ -13,33 +13,17 @@ from os import path
 
 def get_accuracy(model, X, Y, k=3):
     predictions = model.predict(X, k)
-    accuracy = np.sum(Y == predictions) / X.shape[0]
+    accuracy = np.mean(Y == predictions)
 
     return accuracy
 
 
 # Loads the training and test data.
-training_data, test_data = load_cifar10(path.join('data', 'cifar10'))
-
-# Formats the training data.
-training_X = np.concatenate([training_data[0]['data'],
-                             training_data[1]['data'],
-                             training_data[2]['data'],
-                             training_data[3]['data'],
-                             training_data[4]['data']])
-training_Y = np.concatenate([training_data[0]['labels'],
-                             training_data[1]['labels'],
-                             training_data[2]['labels'],
-                             training_data[3]['labels'],
-                             training_data[4]['labels']])
-
-# Formats the test data.
-test_X = test_data['data']
-test_Y = test_data['labels']
+X, Y, test_X, test_Y = load_cifar10(path.join('data', 'cifar10'))
 
 # Trains the classifier.
 model = KNearestNeighbors()
-model.train(training_X, training_Y)
+model.train(X, Y)
 
 # Tests the classifier.
 k = 3
@@ -49,8 +33,8 @@ test_accuracy = get_accuracy(model,
                              test_Y[:test_count],
                              k)
 training_accuracy = get_accuracy(model,
-                                 training_X[:test_count],
-                                 training_Y[:test_count],
+                                 X[:test_count],
+                                 Y[:test_count],
                                  k)
 
 print('For k = {}:'.format(k))

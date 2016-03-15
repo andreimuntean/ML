@@ -39,6 +39,6 @@ def get_softmax_loss(X, Y, W, regularization=1):
     probabilities = np.exp(scores[Y_rows, Y]) / np.sum(np.exp(scores), axis=1)
 
     # Computes the loss and applies L2 regularization.
-    loss = -np.log(probabilities) + regularization * np.sum(W**2)
+    loss = np.sum(-np.log(probabilities)) + regularization * np.sum(W**2)
 
     return loss
