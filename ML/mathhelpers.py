@@ -17,16 +17,18 @@ def get_entropy(x):
     return entropy
 
 
-def get_numerical_grad(f, x, h=0.001):
+def get_numerical_grad(f, x, h=0.00001):
 	"""Computes the numerical gradient of the specified function."""
 
 	initial_fx = f(x)
 	grad = np.zeros(x.shape)
 
-	for index in range(0, x.size):
+	for index, value in np.ndenumerate(x):
+		# Evaluates f(x + h).
+		previous_x = x[index]
 		x[index] += h
 		grad[index] = (f(x) - initial_fx) / h
-		x[index] -= h
+		x[index] = previous_x
 
 	return grad
 
