@@ -21,7 +21,7 @@ test_X = np.column_stack((np.ones(test_X.shape[0]), test_X))
 
 # Configures the hyperparameters.
 batch_size = 128
-step_size = 0.00000001
+step_size = 0.00000003
 
 # Generates the initial weights.
 W = np.random.randn(10, 3073) * 0.0001

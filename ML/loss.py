@@ -19,8 +19,8 @@ def get_svm_loss(X, Y, W, margin=1, regularization=1):
     margin_loss = np.maximum(0, (scores.T - scores[Y_rows, Y]).T + margin)
     margin_loss[Y_rows, Y] = 0
 
-    # Computes the loss and applies L2 regularization.
-    loss = np.sum(margin_loss) / X.shape[0] + regularization * np.sum(W**2)
+    # Computes the loss.
+    loss = np.sum(margin_loss) / X.shape[0]
 
     # Computes the gradients for this function.
     grads = np.zeros(W.shape)
@@ -37,10 +37,11 @@ def get_svm_loss(X, Y, W, margin=1, regularization=1):
         grad[y, :] = -np.count_nonzero(margin_loss_i) * x
         
         # Accumulates the gradient.
-        grads += grad
+        grads += grad / X.shape[0]
 
-    # Finds the overall gradient by calculating the mean.
-    grads /= X.shape[0]
+    # Applies L2 regularization.
+    loss += 0.5 * regularization * np.sum(W**2)
+    grads += regularization * np.sum(W)
 
     return loss, grads
 
